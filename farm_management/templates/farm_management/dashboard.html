@@ -1,0 +1,196 @@
+{% extends 'farm_management/base.html' %}
+
+{% block title %}Dashboard | Dagooc Farm{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div>
+        <p class="eyebrow">Operations Overview</p>
+        <h1>{{ stats.title }}</h1>
+        <p class="role-tag">Logged in as {{ role }}</p>
+    </div>
+    <div class="page-actions">
+        {% if request.session.role == 'owner' %}
+            <button type="button" class="secondary-btn" data-modal-target="user-modal">Add User</button>
+            <button type="button" class="primary-btn" data-modal-target="sale-modal">Record Sale</button>
+        {% endif %}
+        {% if request.session.role == 'finance' %}
+            <button type="button" class="primary-btn" data-modal-target="report-modal">Generate Finance Report</button>
+        {% endif %}
+        {% if request.session.role == 'inventory' %}
+            <button type="button" class="primary-btn" data-modal-target="stock-modal">Adjust Stock</button>
+        {% endif %}
+        {% if request.session.role == 'sales' %}
+            <button type="button" class="primary-btn" data-modal-target="sale-modal">New Transaction</button>
+        {% endif %}
+        {% if request.session.role == 'hr' %}
+            <button type="button" class="primary-btn" data-modal-target="report-modal">Submit Report</button>
+        {% endif %}
+        {% if request.session.role == 'staff' %}
+            <button type="button" class="primary-btn" data-modal-target="report-modal">Submit Daily Report</button>
+        {% endif %}
+        {% if request.session.role != 'staff' and request.session.role != 'owner' and request.session.role != 'finance' %}
+            <button type="button" class="secondary-btn" data-modal-target="report-modal">Submit Report</button>
+        {% endif %}
+    </div>
+</section>
+
+<div class="stats-grid">
+    {% for card in stats.cards %}
+    <div class="stat-card {% if forloop.last %}accent{% endif %}">
+        <span>{{ card.label }}</span>
+        <strong>{{ card.value }}</strong>
+        <small>{{ card.note }}</small>
+    </div>
+    {% endfor %}
+</div>
+
+{% if request.session.role == 'staff' %}
+<div class="content-grid two-col">
+    <div class="panel">
+        <h3>Today's Checklist</h3>
+        <ul class="stack-list">
+            <li><span>Complete poultry feeding rounds</span><strong>Done</strong></li>
+            <li><span>Inspect harvested produce</span><strong>In progress</strong></li>
+            <li><span>Update daily activity log</span><strong>Pending</strong></li>
+            <li><span>Submit field report</span><strong>Due 2:00 PM</strong></li>
+        </ul>
+    </div>
+
+    <div class="panel">
+        <h3>My Work Summary</h3>
+        <ul class="stack-list">
+            <li><span>Assigned shifts</span><strong>2 completed</strong></li>
+            <li><span>Output</span><strong>18 tasks</strong></li>
+            <li><span>Supervisor</span><strong>Randy Dagooc</strong></li>
+            <li><span>Attendance</span><strong>96% this month</strong></li>
+        </ul>
+    </div>
+</div>
+{% else %}
+<div class="content-grid two-col">
+    <div class="panel">
+        <h3>Sales Trend</h3>
+        <div class="chart-wrap">
+            <div class="chart-col"><div class="chart-bar" style="height: 42%;"></div><small>Jan</small></div>
+            <div class="chart-col"><div class="chart-bar" style="height: 52%;"></div><small>Feb</small></div>
+            <div class="chart-col"><div class="chart-bar" style="height: 58%;"></div><small>Mar</small></div>
+            <div class="chart-col"><div class="chart-bar" style="height: 69%;"></div><small>Apr</small></div>
+            <div class="chart-col"><div class="chart-bar" style="height: 77%;"></div><small>May</small></div>
+            <div class="chart-col"><div class="chart-bar" style="height: 89%;"></div><small>Jun</small></div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <h3>Operations Snapshot</h3>
+        <ul class="stack-list">
+            <li><span>Sales Overview</span><strong>₱ 1.25M</strong></li>
+            <li><span>Inventory Health</span><strong>82% in-stock</strong></li>
+            <li><span>HR Overview</span><strong>92% attendance</strong></li>
+            <li><span>Financial Overview</span><strong>₱ 392K net</strong></li>
+        </ul>
+    </div>
+</div>
+
+{% if request.session.role == 'owner' or request.session.role == 'finance' %}
+<div class="content-grid two-col">
+    <div class="panel">
+        <h3>Product Trend & Movement</h3>
+        <div class="chart-wrap">
+            <div class="chart-col"><div class="chart-bar" style="height: 35%;"></div><small>Beans</small></div>
+            <div class="chart-col"><div class="chart-bar" style="height: 55%;"></div><small>Mango</small></div>
+            <div class="chart-col"><div class="chart-bar" style="height: 65%;"></div><small>Basil</small></div>
+            <div class="chart-col"><div class="chart-bar" style="height: 75%;"></div><small>Eggplant</small></div>
+            <div class="chart-col"><div class="chart-bar" style="height: 88%;"></div><small>Poultry</small></div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <h3>Current Contracts</h3>
+        <ul class="stack-list">
+            <li><span>PhilGEPS Supply Contract</span><strong>₱ 240,000</strong></li>
+            <li><span>Department of Agriculture Purchase</span><strong>₱ 180,500</strong></li>
+            <li><span>Hotel Supply Agreement</span><strong>₱ 96,000</strong></li>
+            <li><span>Local Retail Renewal</span><strong>₱ 54,750</strong></li>
+        </ul>
+    </div>
+</div>
+{% endif %}
+
+<div class="content-grid two-col">
+    <div class="panel">
+        <h3>Role Management & Access</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Randy Dagooc</td>
+                    <td>Owner</td>
+                    <td>Active</td>
+                    <td><button class="tiny-btn" type="button">Edit</button></td>
+                </tr>
+                <tr>
+                    <td>Rica Jumao-as</td>
+                    <td>Sales</td>
+                    <td>Active</td>
+                    <td><button class="tiny-btn" type="button">Disable</button></td>
+                </tr>
+                <tr>
+                    <td>Lito Salazar</td>
+                    <td>Inventory</td>
+                    <td>Active</td>
+                    <td><button class="tiny-btn" type="button">Edit</button></td>
+                </tr>
+                <tr>
+                    <td>Nico Reyes</td>
+                    <td>HR</td>
+                    <td>Pending</td>
+                    <td><button class="tiny-btn" type="button">Approve</button></td>
+                </tr>
+            </tbody>
+        </table>
+        {% if request.session.role == 'owner' %}
+            <div class="inline-actions">
+                <button type="button" class="primary-btn" data-modal-target="user-modal">Add User</button>
+                <button type="button" class="secondary-btn" data-modal-target="user-modal">Manage Access</button>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="panel">
+        <h3>Staff Reports</h3>
+        <ul class="stack-list">
+            <li><span>Daily report - Rica</span><strong>Submitted</strong></li>
+            <li><span>Weekly report - Lito</span><strong>Pending</strong></li>
+            <li><span>Daily report - Nico</span><strong>Reviewed</strong></li>
+            <li><span>Weekly summary</span><strong>4 total reports</strong></li>
+        </ul>
+        <div class="inline-actions">
+            {% if request.session.role == 'owner' or request.session.role == 'finance' %}
+                <button type="button" class="primary-btn" data-modal-target="report-modal">Submit Report</button>
+                <button type="button" class="secondary-btn">Review Summary</button>
+            {% else %}
+                <button type="button" class="primary-btn" data-modal-target="report-modal">Submit Report</button>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="panel mt-20">
+    <h3>Owner Summary</h3>
+    <div class="summary-strip">
+        <div><strong>18</strong><span>Open tasks</span></div>
+        <div><strong>7</strong><span>Pending approvals</span></div>
+        <div><strong>4</strong><span>Reports to review</span></div>
+        <div><strong>92%</strong><span>Team productivity</span></div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

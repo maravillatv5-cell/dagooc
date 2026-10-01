@@ -1,0 +1,261 @@
+{% extends 'farm_management/base.html' %}
+
+{% block title %}HR Management | Dagooc Farm{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div>
+        <p class="eyebrow">Human Resources</p>
+        <h1>Staff Management and Payroll</h1>
+    </div>
+</section>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <span>Employees</span>
+        <strong>48</strong>
+        <small>Active staff</small>
+    </div>
+    <div class="stat-card">
+        <span>Attendance</span>
+        <strong>92%</strong>
+        <small>This month</small>
+    </div>
+    <div class="stat-card">
+        <span>Leaves</span>
+        <strong>6</strong>
+        <small>Pending</small>
+    </div>
+    <div class="stat-card accent">
+        <span>Payroll</span>
+        <strong>₱ 268,900</strong>
+        <small>Monthly payout</small>
+    </div>
+</div>
+
+{% if section == 'attendance' or section == 'overview' or section == None %}
+<div class="panel mt-20" id="attendance" style="margin-top: 0;">
+    <div class="tab-buttons" style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:18px;">
+        <button type="button" class="primary-btn" style="padding: 10px 16px;">Attendance</button>
+        <button type="button" class="secondary-btn" style="padding: 10px 16px;">Payroll</button>
+        <button type="button" class="secondary-btn" style="padding: 10px 16px;">Applicants & Employees</button>
+    </div>
+
+    <div class="content-grid two-col">
+        <div class="panel">
+            <h3>Daily Attendance Entry</h3>
+            <form class="form-grid">
+                <p>
+                    <label>Employee</label>
+                    <select>
+                        <option>Lito Salazar</option>
+                        <option>Rica Jumao-as</option>
+                        <option>Nico Reyes</option>
+                    </select>
+                </p>
+                <p>
+                    <label>Work Date</label>
+                    <input type="text" value="Oct 02, 2026">
+                </p>
+                <p>
+                    <label>Time In</label>
+                    <input type="text" value="07:30 AM">
+                </p>
+                <p>
+                    <label>Time Out</label>
+                    <input type="text" value="05:00 PM">
+                </p>
+                <button type="button" class="primary-btn">Save Attendance</button>
+            </form>
+        </div>
+
+        <div class="panel">
+            <h3>Employee Type Summary</h3>
+            <ul class="stack-list">
+                <li><span>Management</span><strong>4</strong></li>
+                <li><span>Regular</span><strong>30</strong></li>
+                <li><span>Contractual</span><strong>8</strong></li>
+                <li><span>Seasonal</span><strong>6</strong></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="panel mt-20">
+        <h3>Attendance Log</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in attendance %}
+                <tr>
+                    <td>{{ record.name }}</td>
+                    <td>{{ record.date }}</td>
+                    <td>{{ record.status }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="3">No attendance records.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+{% if section == 'payroll' or section == 'overview' or section == None %}
+<div class="panel mt-20" id="payroll">
+    <h3>Payroll Summary</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Salary</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in payroll %}
+            <tr>
+                <td>{{ entry.name }}</td>
+                <td>{{ entry.type }}</td>
+                <td>{{ entry.salary }}</td>
+                <td>{{ entry.status }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4">No payroll entries.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="panel mt-20">
+    <h3>Tentative Payroll Based on Attendance</h3>
+    <div class="inline-actions">
+        <button type="button" class="primary-btn">Generate Payroll Report</button>
+        <button type="button" class="secondary-btn">Export Summary</button>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Days Present</th>
+                <th>Rate</th>
+                <th>Tentative Pay</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in tentative_payroll %}
+            <tr>
+                <td>{{ item.name }}</td>
+                <td>{{ item.days_present }}</td>
+                <td>{{ item.rate }}</td>
+                <td>{{ item.tentative_pay }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4">No tentative payroll data.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+{% if section == 'employees' or section == 'overview' or section == None %}
+<div class="panel mt-20" id="applicants-directory">
+    <h3>Employee Directory</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Role</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for employee in employees %}
+            <tr>
+                <td>{{ employee.name }}</td>
+                <td>{{ employee.employee_type }}</td>
+                <td>{{ employee.role }}</td>
+                <td>{{ employee.status }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4">No employees yet.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+{% if section == 'applicants' or section == 'overview' or section == None %}
+<div class="panel mt-20">
+    <h3>Possible Applicant / Worker Submissions</h3>
+    <form class="form-grid">
+        <p>
+            <label>Applicant Name</label>
+            <input type="text" value="Ana Reyes">
+        </p>
+        <p>
+            <label>Position Applied</label>
+            <input type="text" value="Farm Worker">
+        </p>
+        <p>
+            <label>Employment Type</label>
+            <select>
+                <option>Permanent</option>
+                <option>Contractual</option>
+                <option>Seasonal</option>
+            </select>
+        </p>
+        <p>
+            <label>Type of Work</label>
+            <select>
+                <option>Poultry</option>
+                <option>Hydroponics</option>
+                <option>Bees</option>
+                <option>Sales / Customer Service</option>
+                <option>General Farm Support</option>
+            </select>
+        </p>
+        <p>
+            <label>Remarks / Experience</label>
+            <textarea rows="4">Has 2 years of poultry farm support and harvest handling.</textarea>
+        </p>
+        <button type="button" class="primary-btn">Submit Applicant</button>
+    </form>
+</div>
+
+<div class="panel mt-20">
+    <h3>Applicant Review Queue</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Position</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for applicant in applicants %}
+            <tr>
+                <td>{{ applicant.name }}</td>
+                <td>{{ applicant.role }}</td>
+                <td>{{ applicant.type }}</td>
+                <td>{{ applicant.status }}</td>
+                <td><button class="tiny-btn" type="button">Approve</button></td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5">No applicants yet.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,130 @@
+{% extends 'farm_management/base.html' %}
+
+{% block title %}Inventory | Dagooc Farm{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div>
+        <p class="eyebrow">Inventory Module</p>
+        <h1>Stock and Supply Monitoring</h1>
+    </div>
+</section>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <span>Vegetables</span>
+        <strong>520 kg</strong>
+        <small>Available</small>
+    </div>
+    <div class="stat-card">
+        <span>Fruits</span>
+        <strong>185 kg</strong>
+        <small>Harvested</small>
+    </div>
+    <div class="stat-card">
+        <span>Herbs</span>
+        <strong>18 packs</strong>
+        <small>Restocking soon</small>
+    </div>
+    <div class="stat-card accent">
+        <span>Ready for Sale</span>
+        <strong>82%</strong>
+        <small>In-stock rate</small>
+    </div>
+</div>
+
+<div class="content-grid two-col">
+    <div class="panel">
+        <h3>Inventory Movement & Adjustment</h3>
+        <form class="form-grid">
+            <p>
+                <label>Item</label>
+                <select>
+                    <option>Baguio Beans</option>
+                    <option>Carabao Mango</option>
+                    <option>Fresh Basil</option>
+                    <option>Others</option>
+                </select>
+            </p>
+            <p>
+                <label>If Others, specify item</label>
+                <input type="text" value="Enter custom item name">
+            </p>
+            <p>
+                <label>Movement Type</label>
+                <select>
+                    <option>INBOUND</option>
+                    <option>HARVEST</option>
+                    <option>SPOILAGE</option>
+                    <option>SALE</option>
+                </select>
+            </p>
+            <p>
+                <label>Vendor / Source</label>
+                <input type="text" value="Luzon Produce Co.">
+            </p>
+            <p>
+                <label>Quantity Changed</label>
+                <input type="text" value="15 kg">
+            </p>
+            <p>
+                <label>Reason / Remarks</label>
+                <textarea rows="3">Supplier delivery / sales deduction / spoilage check</textarea>
+            </p>
+            <button type="button" class="primary-btn">Save Inventory Log</button>
+        </form>
+    </div>
+
+    <div class="panel">
+        <h3>Inventory Watchlist</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Category</th>
+                    <th>Stock</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr {% if item.status == 'Low stock' %}class="warning-row"{% endif %}>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.category }}</td>
+                    <td>{{ item.stock }}</td>
+                    <td>{{ item.status }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4">No inventory records yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="panel mt-20">
+    <h3>Recent Stock Transactions</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Type</th>
+                <th>Quantity</th>
+                <th>Reason</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in transaction_log %}
+            <tr>
+                <td>{{ entry.item }}</td>
+                <td>{{ entry.type }}</td>
+                <td>{{ entry.quantity }}</td>
+                <td>{{ entry.reason }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4">No stock movement records.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

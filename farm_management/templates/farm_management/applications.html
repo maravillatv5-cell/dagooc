@@ -1,0 +1,45 @@
+{% extends 'farm_management/base.html' %}
+
+{% block title %}Applications | Dagooc Farm{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div>
+        <p class="eyebrow">Owner Review</p>
+        <h1>Applicant Review Board</h1>
+    </div>
+</section>
+
+<div class="panel">
+    <h3>Applications for Future Staff</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Role Requested</th>
+                <th>Employment Type</th>
+                <th>Status</th>
+                <th>Experience</th>
+                <th>Decision</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for applicant in applicants %}
+            <tr>
+                <td>{{ applicant.name }}</td>
+                <td>{{ applicant.role }}</td>
+                <td>{{ applicant.type }}</td>
+                <td>{{ applicant.status }}</td>
+                <td>{{ applicant.experience }}</td>
+                <td>
+                    <button class="tiny-btn" type="button">Approve</button>
+                    <button class="tiny-btn secondary-inline" type="button">Reject</button>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6">No applications yet.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

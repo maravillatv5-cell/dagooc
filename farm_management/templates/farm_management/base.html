@@ -1,0 +1,151 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Dagooc Farm Ops{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'farm_management/styles.css' %}">
+</head>
+<body>
+    <div class="page-watermark" aria-hidden="true"></div>
+    <div class="app-shell top-nav-shell">
+        <header class="topbar">
+            <div class="brand-box">
+                <div class="brand-logo-wrap">
+                    <img src="{% static 'farm_management/logo.svg' %}" alt="Dagooc Farm Logo" class="brand-logo">
+                </div>
+                <div>
+                    <h2>Dagooc Farm</h2>
+                    <p>Owner & Staff Portal</p>
+                </div>
+            </div>
+
+            <nav class="nav top-nav">
+                {% if request.session.role == 'owner' or request.session.role == 'finance' %}
+                    <a href="{% url 'dashboard' %}" class="nav-link">Dashboard</a>
+                {% endif %}
+                {% if request.session.role == 'owner' or request.session.role == 'finance' or request.session.role == 'inventory' %}
+                    <a href="{% url 'inventory' %}" class="nav-link">Inventory</a>
+                {% endif %}
+                {% if request.session.role == 'owner' or request.session.role == 'finance' or request.session.role == 'sales' %}
+                    <a href="{% url 'pos' %}" class="nav-link">POS</a>
+                {% endif %}
+                {% if request.session.role == 'owner' or request.session.role == 'finance' or request.session.role == 'hr' %}
+                    <a href="{% url 'hr_attendance' %}" class="nav-link">Attendance</a>
+                    <a href="{% url 'hr_payroll' %}" class="nav-link">Payroll</a>
+                    <a href="{% url 'hr_applicants' %}" class="nav-link">Applicants</a>
+                    <a href="{% url 'hr_employees' %}" class="nav-link">Employees</a>
+                {% endif %}
+                {% if request.session.role == 'owner' or request.session.role == 'finance' %}
+                    <a href="{% url 'reports' %}" class="nav-link">Reports</a>
+                {% endif %}
+                {% if request.session.role == 'owner' %}
+                    <a href="{% url 'applications' %}" class="nav-link">Applications</a>
+                {% endif %}
+                {% if request.session.role == 'staff' %}
+                    <a href="{% url 'tasks' %}" class="nav-link">My Tasks</a>
+                {% endif %}
+                {% if request.session.role %}
+                    <a href="{% url 'logout' %}" class="nav-link logout-link">Logout</a>
+                {% endif %}
+            </nav>
+        </header>
+
+        <main class="main-content">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+    <div class="modal-backdrop" id="sale-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Record New Sale</h3>
+                <button type="button" class="close-modal" aria-label="Close">×</button>
+            </div>
+            <form class="form-grid modal-form">
+                <p><label>Customer</label><input type="text" value="Walk-in Customer"></p>
+                <p><label>Item</label><select><option>Baguio Beans</option><option>Carabao Mango</option><option>Fresh Basil</option></select></p>
+                <p><label>Quantity</label><input type="text" value="2"></p>
+                <p><label>Payment</label><select><option>Cash</option><option>GCash</option><option>Bank Transfer</option></select></p>
+                <button type="button" class="primary-btn">Save Transaction</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-backdrop" id="stock-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Add Stock / Adjustment</h3>
+                <button type="button" class="close-modal" aria-label="Close">×</button>
+            </div>
+            <form class="form-grid modal-form">
+                <p><label>Item</label><select><option>Baguio Beans</option><option>Carabao Mango</option><option>Fresh Basil</option></select></p>
+                <p><label>Movement Type</label><select><option>INBOUND</option><option>HARVEST</option><option>SPOILAGE</option></select></p>
+                <p><label>Quantity</label><input type="text" value="25 kg"></p>
+                <p><label>Remarks</label><textarea rows="3">Supplier delivery</textarea></p>
+                <button type="button" class="primary-btn">Apply Adjustment</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-backdrop" id="report-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Submit Daily / Weekly Report</h3>
+                <button type="button" class="close-modal" aria-label="Close">×</button>
+            </div>
+            <form class="form-grid modal-form">
+                <p><label>Submitted By</label><input type="text" value="Staff Name"></p>
+                <p><label>Report Type</label><select><option>Daily</option><option>Weekly</option></select></p>
+                <p><label>Summary</label><textarea rows="4">Today's output, issues, and recommendations...</textarea></p>
+                <button type="button" class="primary-btn">Submit Report</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-backdrop" id="user-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Add / Update User Access</h3>
+                <button type="button" class="close-modal" aria-label="Close">×</button>
+            </div>
+            <form class="form-grid modal-form">
+                <p><label>Name</label><input type="text" value="New Staff Member"></p>
+                <p><label>Email</label><input type="email" value="staff@dagoocfarm.com"></p>
+                <p><label>Role</label><select><option>Owner</option><option>Manager</option><option>Sales</option><option>Inventory</option><option>HR</option><option>Staff</option></select></p>
+                <p><label>Status</label><select><option>Active</option><option>Pending</option><option>Disabled</option></select></p>
+                <button type="button" class="primary-btn">Save Access</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('[data-modal-target]').forEach(function (button) {
+                var target = document.getElementById(button.dataset.modalTarget);
+                if (!target) return;
+
+                button.addEventListener('click', function () {
+                    target.classList.add('show');
+                });
+            });
+
+            document.querySelectorAll('.modal-backdrop').forEach(function (modal) {
+                var closeButton = modal.querySelector('.close-modal');
+                if (closeButton) {
+                    closeButton.addEventListener('click', function () {
+                        modal.classList.remove('show');
+                    });
+                }
+
+                modal.addEventListener('click', function (event) {
+                    if (event.target === modal) {
+                        modal.classList.remove('show');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

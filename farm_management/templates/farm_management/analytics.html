@@ -1,0 +1,47 @@
+{% extends 'farm_management/base.html' %}
+
+{% block title %}Analytics | Dagooc Farm{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div>
+        <p class="eyebrow">Dashboard Analytics</p>
+        <h1>Operational Insights</h1>
+    </div>
+</section>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <span>Gross Sales</span>
+        <strong>₱ 1,248,500</strong>
+        <small>Current cycle</small>
+    </div>
+    <div class="stat-card">
+        <span>Inventory Value</span>
+        <strong>₱ 486,000</strong>
+        <small>Stock estimate</small>
+    </div>
+    <div class="stat-card">
+        <span>Payroll</span>
+        <strong>₱ 268,900</strong>
+        <small>Current payout</small>
+    </div>
+    <div class="stat-card accent">
+        <span>Net Margin</span>
+        <strong>₱ 392,400</strong>
+        <small>Projected gain</small>
+    </div>
+</div>
+
+<div class="panel mt-20">
+    <h3>Monthly Sales Trend</h3>
+    <div class="chart-wrap">
+        {% for point in chart_data %}
+        <div class="chart-col">
+            <div class="chart-bar" style="height: {{ point.value }}%;"></div>
+            <small>{{ point.label }}</small>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

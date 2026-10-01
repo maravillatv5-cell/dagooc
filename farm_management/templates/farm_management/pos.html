@@ -1,0 +1,140 @@
+{% extends 'farm_management/base.html' %}
+
+{% block title %}POS | Dagooc Farm{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div>
+        <p class="eyebrow">Point of Sale</p>
+        <h1>Sales and Checkout Counter</h1>
+    </div>
+</section>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <span>Today’s Sales</span>
+        <strong>₱ 46,700</strong>
+        <small>Across all channels</small>
+    </div>
+    <div class="stat-card">
+        <span>Orders</span>
+        <strong>118</strong>
+        <small>Completed</small>
+    </div>
+    <div class="stat-card">
+        <span>Average Sale</span>
+        <strong>₱ 395</strong>
+        <small>Per transaction</small>
+    </div>
+    <div class="stat-card accent">
+        <span>Cash in Drawer</span>
+        <strong>₱ 7,250</strong>
+        <small>Available funds</small>
+    </div>
+</div>
+
+<div class="content-grid two-col">
+    <div class="panel">
+        <h3>Record New Sale</h3>
+        <form class="form-grid">
+            <p>
+                <label>Sale Type</label>
+                <select>
+                    <option>Retail Sale</option>
+                    <option>Wholesale</option>
+                    <option>PhilGEPS / Department of Agriculture</option>
+                    <option>Institutional / Catering</option>
+                </select>
+            </p>
+            <p>
+                <label>Customer / Client</label>
+                <input type="text" value="Walk-in Customer">
+            </p>
+            <p>
+                <label>Contact Number</label>
+                <input type="text" value="0917-123-4567">
+            </p>
+            <p>
+                <label>Reference / PO</label>
+                <input type="text" value="-">
+            </p>
+            <p>
+                <label>Product</label>
+                <select>
+                    <option>Baguio Beans</option>
+                    <option>Carabao Mango</option>
+                    <option>Fresh Basil</option>
+                </select>
+            </p>
+            <p>
+                <label>Quantity</label>
+                <input type="text" value="2">
+            </p>
+            <p>
+                <label>Payment Method</label>
+                <select>
+                    <option>Cash</option>
+                    <option>GCash</option>
+                    <option>Bank Transfer</option>
+                    <option>Government Check / Voucher</option>
+                </select>
+            </p>
+            <button type="button" class="primary-btn">Complete Sale</button>
+        </form>
+    </div>
+
+    <div class="panel">
+        <h3>Cart Preview</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Qty</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart_preview %}
+                <tr>
+                    <td>{{ item.item }}</td>
+                    <td>{{ item.qty }}</td>
+                    <td>{{ item.amount }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="3">No items in cart.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="mt-20">
+            <p><strong>Payment Status:</strong> Cleared</p>
+            <p><strong>Auto Log:</strong> Inventory deduction + financial revenue record</p>
+        </div>
+    </div>
+</div>
+
+<div class="panel mt-20">
+    <h3>Recent Transactions</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Receipt</th>
+                <th>Buyer</th>
+                <th>Method</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in transactions %}
+            <tr>
+                <td>{{ transaction.receipt }}</td>
+                <td>{{ transaction.buyer }}</td>
+                <td>{{ transaction.method }}</td>
+                <td>{{ transaction.amount }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4">No sales recorded yet.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

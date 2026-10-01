@@ -1,0 +1,41 @@
+{% extends 'farm_management/base.html' %}
+
+{% block title %}My Tasks | Dagooc Farm{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div>
+        <p class="eyebrow">Daily Operations</p>
+        <h1>My Tasks</h1>
+    </div>
+</section>
+
+<div class="content-grid two-col">
+    <div class="panel">
+        <h3>Today's Workload</h3>
+        <ul class="stack-list">
+            {% for item in tasks %}
+            <li>
+                <span>{{ item.title }}</span>
+                <strong>{{ item.status }}</strong>
+            </li>
+            {% empty %}
+            <li><span>No tasks assigned.</span><strong>Ready</strong></li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="panel">
+        <h3>Shift Summary</h3>
+        <ul class="stack-list">
+            <li><span>Shift</span><strong>07:30 AM - 04:30 PM</strong></li>
+            <li><span>Assigned Area</span><strong>Farm Operations</strong></li>
+            <li><span>Daily Output</span><strong>12 tasks completed</strong></li>
+            <li><span>Supervisor</span><strong>Maria Dagooc</strong></li>
+        </ul>
+        <div class="inline-actions mt-20">
+            <button type="button" class="primary-btn">Submit Daily Report</button>
+        </div>
+    </div>
+</div>
+{% endblock %}

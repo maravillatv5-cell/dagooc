@@ -1,0 +1,36 @@
+{% extends 'farm_management/base.html' %}
+
+{% block title %}Reports | Dagooc Farm{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div>
+        <p class="eyebrow">Executive Summary</p>
+        <h1>Module Summary Reports</h1>
+        <p class="role-tag">Dagooc Farm consolidated overview</p>
+    </div>
+</section>
+
+<div class="stats-grid">
+    {% for item in report_cards %}
+    <div class="stat-card">
+        <span>{{ item.module }}</span>
+        <strong>{{ item.headline }}</strong>
+        <small>{{ item.detail }}</small>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="content-grid two-col">
+    {% for section in summary_sections %}
+    <div class="panel">
+        <h3>{{ section.title }}</h3>
+        <ul class="stack-list">
+            {% for item in section.items %}
+            <li><span>{{ item }}</span><strong>Updated</strong></li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
