@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Dagooc Farm Ops{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'farm_management/styles.css' %}">
+    <script defer src="{% static 'farm_management/view-mode.js' %}"></script>
 </head>
 <body>
     <div class="page-watermark" aria-hidden="true"></div>
@@ -25,13 +26,13 @@
                 {% if request.session.role == 'owner' or request.session.role == 'finance' %}
                     <a href="{% url 'dashboard' %}" class="nav-link">Dashboard</a>
                 {% endif %}
-                {% if request.session.role == 'owner' or request.session.role == 'finance' or request.session.role == 'inventory' %}
+                {% if request.session.role == 'owner' or request.session.role == 'inventory' %}
                     <a href="{% url 'inventory' %}" class="nav-link">Inventory</a>
                 {% endif %}
-                {% if request.session.role == 'owner' or request.session.role == 'finance' or request.session.role == 'sales' %}
+                {% if request.session.role == 'owner' or request.session.role == 'sales' %}
                     <a href="{% url 'pos' %}" class="nav-link">POS</a>
                 {% endif %}
-                {% if request.session.role == 'owner' or request.session.role == 'finance' or request.session.role == 'hr' %}
+                {% if request.session.role == 'owner' or request.session.role == 'hr' %}
                     <a href="{% url 'hr_attendance' %}" class="nav-link">Attendance</a>
                     <a href="{% url 'hr_payroll' %}" class="nav-link">Payroll</a>
                     <a href="{% url 'hr_applicants' %}" class="nav-link">Applicants</a>
@@ -65,7 +66,7 @@
             </div>
             <form class="form-grid modal-form">
                 <p><label>Customer</label><input type="text" value="Walk-in Customer"></p>
-                <p><label>Item</label><select><option>Baguio Beans</option><option>Carabao Mango</option><option>Fresh Basil</option></select></p>
+                <p><label>Item</label><select><option>Lettuce</option><option>Carabao Mango</option><option>Dragon Fruit</option></select></p>
                 <p><label>Quantity</label><input type="text" value="2"></p>
                 <p><label>Payment</label><select><option>Cash</option><option>GCash</option><option>Bank Transfer</option></select></p>
                 <button type="button" class="primary-btn">Save Transaction</button>
@@ -80,7 +81,7 @@
                 <button type="button" class="close-modal" aria-label="Close">×</button>
             </div>
             <form class="form-grid modal-form">
-                <p><label>Item</label><select><option>Baguio Beans</option><option>Carabao Mango</option><option>Fresh Basil</option></select></p>
+                <p><label>Item</label><select><option>Lettuce</option><option>Carabao Mango</option><option>Dragon Fruit</option></select></p>
                 <p><label>Movement Type</label><select><option>INBOUND</option><option>HARVEST</option><option>SPOILAGE</option></select></p>
                 <p><label>Quantity</label><input type="text" value="25 kg"></p>
                 <p><label>Remarks</label><textarea rows="3">Supplier delivery</textarea></p>

@@ -5,6 +5,7 @@ from farm_management import views
 urlpatterns = [
     path('', views.redirect_to_login, name='home'),
     path('login/', views.login_view, name='login'),
+    path('login/credentials/', views.credential_login_view, name='credential_login'),
     path('logout/', views.logout_view, name='logout'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('inventory/', views.inventory_view, name='inventory'),

@@ -6,11 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dagooc Farm Login</title>
     <link rel="stylesheet" href="{% static 'farm_management/styles.css' %}">
+    <script defer src="{% static 'farm_management/view-mode.js' %}"></script>
 </head>
 <body class="login-body">
     <div class="page-watermark" aria-hidden="true"></div>
     <div class="login-shell">
         <div class="login-panel">
+            <div class="view-mode-switch" role="group" aria-label="Preview layout">
+                <button type="button" data-view-mode-choice="desktop" aria-pressed="true">Desktop</button>
+                <button type="button" data-view-mode-choice="mobile" aria-pressed="false">Mobile</button>
+            </div>
             <div class="brand-box login-brand">
                 <div class="brand-mark">DF</div>
                 <div>
@@ -27,12 +32,13 @@
                 <div class="role-grid">
                     <button type="submit" name="role" value="owner" class="role-btn owner">Randy Dagooc<br><small>Owner / CEO</small></button>
                     <button type="submit" name="role" value="finance" class="role-btn finance">Finance Staff</button>
-                    <button type="submit" name="role" value="inventory" class="role-btn inventory">Lito Salazar<br><small>Inventory</small></button>
-                    <button type="submit" name="role" value="sales" class="role-btn sales">Rica Jumao-as<br><small>Sales</small></button>
-                    <button type="submit" name="role" value="hr" class="role-btn hr">Nico Reyes<br><small>HR</small></button>
+                    <button type="submit" name="role" value="inventory" class="role-btn inventory">Inventory Staff</button>
+                    <button type="submit" name="role" value="sales" class="role-btn sales">Sales Staff</button>
+                    <button type="submit" name="role" value="hr" class="role-btn hr">HR Staff</button>
                     <button type="submit" name="role" value="staff" class="role-btn staff">Regular Staff</button>
                 </div>
             </form>
+            <a href="{% url 'credential_login' %}" class="secondary-btn credential-preview-link">Preview credential login</a>
         </div>
     </div>
 </body>

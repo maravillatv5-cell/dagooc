@@ -72,6 +72,12 @@
     <div class="panel">
         <h3>Sales Trend</h3>
         <div class="chart-wrap">
+            <svg class="chart-trend-overlay" viewBox="0 0 600 100" preserveAspectRatio="none" aria-hidden="true">
+                <polyline points="43,58 146,48 249,42 351,31 454,23 557,11"></polyline>
+                <circle cx="43" cy="58" r="2.5"></circle><circle cx="146" cy="48" r="2.5"></circle>
+                <circle cx="249" cy="42" r="2.5"></circle><circle cx="351" cy="31" r="2.5"></circle>
+                <circle cx="454" cy="23" r="2.5"></circle><circle cx="557" cy="11" r="2.5"></circle>
+            </svg>
             <div class="chart-col"><div class="chart-bar" style="height: 42%;"></div><small>Jan</small></div>
             <div class="chart-col"><div class="chart-bar" style="height: 52%;"></div><small>Feb</small></div>
             <div class="chart-col"><div class="chart-bar" style="height: 58%;"></div><small>Mar</small></div>
@@ -83,6 +89,24 @@
 
     <div class="panel">
         <h3>Operations Snapshot</h3>
+        {% if request.session.role == 'owner' %}
+        <div class="inventory-mix">
+            <h4>Inventory Mix</h4>
+            <p>Share of tracked item types</p>
+            <div class="inventory-mix-layout">
+                <div class="inventory-pie" role="img" aria-label="{% for item in inventory_mix %}{{ item.category }} {{ item.share }} percent{% if not forloop.last %}, {% endif %}{% endfor %}" style="background: {{ inventory_mix_gradient }};"></div>
+                <ul class="inventory-legend">
+                    {% for item in inventory_mix %}
+                    <li>
+                        <span class="inventory-swatch" style="--swatch-color: {{ item.color }};"></span>
+                        <span>{{ item.category }} <small>{{ item.item_count }} tracked</small></span>
+                        <strong>{{ item.share }}%</strong>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
         <ul class="stack-list">
             <li><span>Sales Overview</span><strong>₱ 1.25M</strong></li>
             <li><span>Inventory Health</span><strong>82% in-stock</strong></li>
@@ -97,9 +121,15 @@
     <div class="panel">
         <h3>Product Trend & Movement</h3>
         <div class="chart-wrap">
-            <div class="chart-col"><div class="chart-bar" style="height: 35%;"></div><small>Beans</small></div>
+            <svg class="chart-trend-overlay" viewBox="0 0 600 100" preserveAspectRatio="none" aria-hidden="true">
+                <polyline points="53,65 177,45 300,35 423,25 547,12"></polyline>
+                <circle cx="53" cy="65" r="2.5"></circle><circle cx="177" cy="45" r="2.5"></circle>
+                <circle cx="300" cy="35" r="2.5"></circle><circle cx="423" cy="25" r="2.5"></circle>
+                <circle cx="547" cy="12" r="2.5"></circle>
+            </svg>
+            <div class="chart-col"><div class="chart-bar" style="height: 35%;"></div><small>Lettuce</small></div>
             <div class="chart-col"><div class="chart-bar" style="height: 55%;"></div><small>Mango</small></div>
-            <div class="chart-col"><div class="chart-bar" style="height: 65%;"></div><small>Basil</small></div>
+            <div class="chart-col"><div class="chart-bar" style="height: 65%;"></div><small>Dragon Fruit</small></div>
             <div class="chart-col"><div class="chart-bar" style="height: 75%;"></div><small>Eggplant</small></div>
             <div class="chart-col"><div class="chart-bar" style="height: 88%;"></div><small>Poultry</small></div>
         </div>
@@ -137,19 +167,19 @@
                     <td><button class="tiny-btn" type="button">Edit</button></td>
                 </tr>
                 <tr>
-                    <td>Rica Jumao-as</td>
+                    <td>Sales Staff</td>
                     <td>Sales</td>
                     <td>Active</td>
                     <td><button class="tiny-btn" type="button">Disable</button></td>
                 </tr>
                 <tr>
-                    <td>Lito Salazar</td>
+                    <td>Inventory Staff</td>
                     <td>Inventory</td>
                     <td>Active</td>
                     <td><button class="tiny-btn" type="button">Edit</button></td>
                 </tr>
                 <tr>
-                    <td>Nico Reyes</td>
+                    <td>HR Staff</td>
                     <td>HR</td>
                     <td>Pending</td>
                     <td><button class="tiny-btn" type="button">Approve</button></td>
@@ -167,9 +197,9 @@
     <div class="panel">
         <h3>Staff Reports</h3>
         <ul class="stack-list">
-            <li><span>Daily report - Rica</span><strong>Submitted</strong></li>
-            <li><span>Weekly report - Lito</span><strong>Pending</strong></li>
-            <li><span>Daily report - Nico</span><strong>Reviewed</strong></li>
+            <li><span>Daily report - Sales Staff</span><strong>Submitted</strong></li>
+            <li><span>Weekly report - Inventory Staff</span><strong>Pending</strong></li>
+            <li><span>Daily report - HR Staff</span><strong>Reviewed</strong></li>
             <li><span>Weekly summary</span><strong>4 total reports</strong></li>
         </ul>
         <div class="inline-actions">

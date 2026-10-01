@@ -3,7 +3,7 @@ from django.shortcuts import redirect, render
 
 ROLE_ACCESS = {
     'owner': {'dashboard', 'inventory', 'pos', 'hr', 'reports', 'applications', 'tasks'},
-    'finance': {'dashboard', 'inventory', 'pos', 'hr', 'reports'},
+    'finance': {'dashboard', 'reports'},
     'inventory': {'inventory'},
     'sales': {'pos'},
     'hr': {'hr'},
@@ -13,9 +13,9 @@ ROLE_ACCESS = {
 ROLE_DISPLAY_NAMES = {
     'owner': 'Randy Dagooc',
     'finance': 'Finance Staff',
-    'inventory': 'Lito Salazar',
-    'sales': 'Rica Jumao-as',
-    'hr': 'Nico Reyes',
+    'inventory': 'Inventory Staff',
+    'sales': 'Sales Staff',
+    'hr': 'HR Staff',
     'staff': 'Regular Staff',
 }
 
@@ -51,6 +51,10 @@ def login_view(request):
         request.session['role'] = role
         return redirect('dashboard')
     return render(request, 'farm_management/login.html')
+
+
+def credential_login_view(request):
+    return render(request, 'farm_management/credential_login.html')
 
 
 def logout_view(request):
@@ -102,6 +106,11 @@ def dashboard(request):
     context = {
         'role': get_role_display_name(role),
         'stats': dashboard_data.get(role, dashboard_data['owner']),
+        'inventory_mix': [
+            {'category': 'Vegetables', 'item_count': 2, 'share': 50, 'color': '#2f7d5c'},
+            {'category': 'Fruits', 'item_count': 2, 'share': 50, 'color': '#e6ad3b'},
+        ] if role == 'owner' else [],
+        'inventory_mix_gradient': 'conic-gradient(#2f7d5c 0 50%, #e6ad3b 50% 100%)',
     }
     return render(request, 'farm_management/dashboard.html', context)
 
@@ -109,14 +118,14 @@ def dashboard(request):
 @role_required('inventory')
 def inventory_view(request):
     items = [
-        {'name': 'Baguio Beans', 'category': 'Vegetables', 'stock': '120 kg', 'status': 'Healthy'},
+        {'name': 'Lettuce', 'category': 'Vegetables', 'stock': '120 kg', 'status': 'Healthy'},
         {'name': 'Carabao Mango', 'category': 'Fruits', 'stock': '45 kg', 'status': 'Low stock'},
-        {'name': 'Fresh Basil', 'category': 'Herbs', 'stock': '18 packs', 'status': 'Restocking'},
+        {'name': 'Dragon Fruit', 'category': 'Fruits', 'stock': '18 kg', 'status': 'Restocking'},
         {'name': 'Eggplant', 'category': 'Vegetables', 'stock': '86 kg', 'status': 'Healthy'},
     ]
     transaction_log = [
-        {'item': 'Fresh Basil', 'type': 'Deduction', 'quantity': '7 packs', 'reason': 'Sales order'},
-        {'item': 'Baguio Beans', 'type': 'Addition', 'quantity': '30 kg', 'reason': 'Supplier delivery'},
+        {'item': 'Dragon Fruit', 'type': 'Deduction', 'quantity': '7 kg', 'reason': 'Sales order'},
+        {'item': 'Lettuce', 'type': 'Addition', 'quantity': '30 kg', 'reason': 'Supplier delivery'},
     ]
     return render(request, 'farm_management/inventory.html', {'items': items, 'transaction_log': transaction_log})
 
@@ -129,9 +138,9 @@ def pos_view(request):
         {'receipt': 'DF-103', 'method': 'Card', 'amount': '₱ 980', 'buyer': 'Walk-in Customer'},
     ]
     cart_preview = [
-        {'item': 'Baguio Beans', 'qty': 2, 'amount': '₱ 150'},
+        {'item': 'Lettuce', 'qty': 2, 'amount': '₱ 150'},
         {'item': 'Carabao Mango', 'qty': 3, 'amount': '₱ 330'},
-        {'item': 'Fresh Basil', 'qty': 1, 'amount': '₱ 35'},
+        {'item': 'Dragon Fruit', 'qty': 1, 'amount': '₱ 35'},
     ]
     return render(request, 'farm_management/pos.html', {'transactions': transactions, 'cart_preview': cart_preview})
 
@@ -139,27 +148,27 @@ def pos_view(request):
 def _build_hr_context():
     employees = [
         {'name': 'Randy Dagooc', 'employee_type': 'Management', 'role': 'Owner / CEO', 'status': 'Active'},
-        {'name': 'Lito Salazar', 'employee_type': 'Regular', 'role': 'Inventory Officer', 'status': 'Active'},
-        {'name': 'Rica Jumao-as', 'employee_type': 'Regular', 'role': 'Sales Associate', 'status': 'Active'},
-        {'name': 'Nico Reyes', 'employee_type': 'Contractual', 'role': 'HR Officer', 'status': 'On Leave'},
+        {'name': 'Inventory Staff', 'employee_type': 'Regular', 'role': 'Inventory Officer', 'status': 'Active'},
+        {'name': 'Sales Staff', 'employee_type': 'Regular', 'role': 'Sales Associate', 'status': 'Active'},
+        {'name': 'HR Staff', 'employee_type': 'Contractual', 'role': 'HR Officer', 'status': 'On Leave'},
         {'name': 'Finance Staff', 'employee_type': 'Regular', 'role': 'Finance Staff', 'status': 'Active'},
     ]
     attendance = [
-        {'name': 'Lito Salazar', 'date': 'Oct 02, 2026', 'status': 'Present'},
-        {'name': 'Rica Jumao-as', 'date': 'Oct 02, 2026', 'status': 'Present'},
-        {'name': 'Nico Reyes', 'date': 'Oct 02, 2026', 'status': 'Absent'},
+        {'name': 'Inventory Staff', 'date': 'Oct 02, 2026', 'status': 'Present'},
+        {'name': 'Sales Staff', 'date': 'Oct 02, 2026', 'status': 'Present'},
+        {'name': 'HR Staff', 'date': 'Oct 02, 2026', 'status': 'Absent'},
         {'name': 'Finance Staff', 'date': 'Oct 02, 2026', 'status': 'Present'},
     ]
     payroll = [
         {'name': 'Randy Dagooc', 'type': 'Management', 'salary': '₱ 40,000', 'status': 'Approved'},
-        {'name': 'Lito Salazar', 'type': 'Regular', 'salary': '₱ 22,000', 'status': 'Pending'},
-        {'name': 'Rica Jumao-as', 'type': 'Regular', 'salary': '₱ 18,000', 'status': 'Approved'},
+        {'name': 'Inventory Staff', 'type': 'Regular', 'salary': '₱ 22,000', 'status': 'Pending'},
+        {'name': 'Sales Staff', 'type': 'Regular', 'salary': '₱ 18,000', 'status': 'Approved'},
         {'name': 'Finance Staff', 'type': 'Regular', 'salary': '₱ 20,000', 'status': 'Tentative'},
     ]
     tentative_payroll = [
         {'name': 'Randy Dagooc', 'days_present': 20, 'rate': '₱ 2,000/day', 'tentative_pay': '₱ 40,000'},
-        {'name': 'Lito Salazar', 'days_present': 18, 'rate': '₱ 1,200/day', 'tentative_pay': '₱ 21,600'},
-        {'name': 'Rica Jumao-as', 'days_present': 19, 'rate': '₱ 950/day', 'tentative_pay': '₱ 18,050'},
+        {'name': 'Inventory Staff', 'days_present': 18, 'rate': '₱ 1,200/day', 'tentative_pay': '₱ 21,600'},
+        {'name': 'Sales Staff', 'days_present': 19, 'rate': '₱ 950/day', 'tentative_pay': '₱ 18,050'},
         {'name': 'Finance Staff', 'days_present': 20, 'rate': '₱ 1,000/day', 'tentative_pay': '₱ 20,000'},
     ]
     applicants = [
@@ -220,7 +229,7 @@ def reports_view(request):
         {'module': 'Operations', 'headline': '89%', 'detail': 'Production output'},
     ]
     summary_sections = [
-        {'title': 'Sales Summary', 'items': ['Total sales: ₱ 1,248,500', 'Orders delivered: 1,182', 'Top product: Baguio Beans']},
+        {'title': 'Sales Summary', 'items': ['Total sales: ₱ 1,248,500', 'Orders delivered: 1,182', 'Top product: Lettuce']},
         {'title': 'Inventory Summary', 'items': ['Current stock value: ₱ 486,000', 'Low stock alerts: 4 items', 'Reorders pending: 2 shipments']},
         {'title': 'HR Summary', 'items': ['Active employees: 48', 'Payroll due: ₱ 268,900', 'Attendance: 92% this month']},
         {'title': 'Operations Summary', 'items': ['Field productivity: 89%', 'Daily tasks completed: 46', 'Pending issues: 7 items']},
