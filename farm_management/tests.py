@@ -63,12 +63,12 @@ class RoleBasedAccessTests(TestCase):
         login_response = self.client.get(reverse('login'))
         self.assertContains(login_response, 'data-view-mode-choice="mobile"')
         self.assertContains(login_response, 'data-view-mode-choice="desktop"')
-        self.assertContains(login_response, 'farm_management/view-mode.js')
+        self.assertContains(login_response, 'farm_management/view-mode.')
 
         self.set_role('owner')
         dashboard_response = self.client.get(reverse('dashboard'))
         self.assertNotContains(dashboard_response, 'data-view-mode-choice="mobile"')
-        self.assertContains(dashboard_response, 'farm_management/view-mode.js')
+        self.assertContains(dashboard_response, 'farm_management/view-mode.')
 
     def test_credential_login_preview_is_linked_and_renders_fields(self):
         login_response = self.client.get(reverse('login'))
