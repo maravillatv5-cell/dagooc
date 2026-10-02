@@ -86,16 +86,37 @@ class RoleBasedAccessTests(TestCase):
 
     def test_credential_login_preview_is_linked_and_renders_fields(self):
         login_response = self.client.get(reverse('login'))
-        self.assertContains(login_response, reverse('credential_login'))
+        self.assertContains(login_response, 'name="username"')
+        self.assertContains(login_response, 'name="password"')
 
         preview_response = self.client.get(reverse('credential_login'))
-        self.assertEqual(preview_response.status_code, 200)
-        self.assertContains(preview_response, 'name="username"')
-        self.assertContains(preview_response, 'name="password"')
-        self.assertContains(preview_response, 'Sign in')
-        self.assertNotContains(preview_response, 'data-view-mode-choice')
-        self.assertNotContains(preview_response, 'Back to role selection')
-        self.assertContains(preview_response, f'window.location.assign("{reverse("login")}")')
+        self.assertRedirects(preview_response, reverse('login'))
+
+    def test_demo_credentials_sign_in_to_the_matching_role(self):
+        destinations = {
+            'owner': 'dashboard',
+            'finance': 'dashboard',
+            'sales': 'sales_entry',
+            'inventory': 'inventory_entry',
+            'hr': 'hr',
+            'staff': 'tasks',
+        }
+        for role, destination in destinations.items():
+            response = self.client.post(reverse('login'), {
+                'username': role,
+                'password': role,
+            }, follow=True)
+            self.assertEqual(self.client.session['role'], role)
+            self.assertEqual(response.redirect_chain[-1][0], reverse(destination))
+
+    def test_invalid_demo_credentials_do_not_sign_in(self):
+        response = self.client.post(reverse('login'), {
+            'username': 'owner',
+            'password': 'wrong',
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Invalid username or password.')
+        self.assertNotIn('role', self.client.session)
 
     def test_owner_dashboard_shows_inventory_mix_but_finance_does_not(self):
         self.set_role('owner')

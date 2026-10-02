@@ -24,21 +24,22 @@
                 </div>
             </div>
 
-            <h1>Choose Your Role</h1>
-            <p class="subtext">Sample internal system access for presentation purposes.</p>
+            <h1>Sign in</h1>
+            <p class="subtext">Enter your account credentials to continue.</p>
 
-            <form method="post">
+            <form class="credential-form" method="post">
                 {% csrf_token %}
-                <div class="role-grid">
-                    <button type="submit" name="role" value="owner" class="role-btn owner">Randy Dagooc<br><small>Owner / CEO</small></button>
-                    <button type="submit" name="role" value="finance" class="role-btn finance">Finance Staff</button>
-                    <button type="submit" name="role" value="inventory" class="role-btn inventory">Inventory Staff</button>
-                    <button type="submit" name="role" value="sales" class="role-btn sales">Sales Staff</button>
-                    <button type="submit" name="role" value="hr" class="role-btn hr">HR Staff</button>
-                    <button type="submit" name="role" value="staff" class="role-btn staff">Regular Staff</button>
+                <div class="credential-field">
+                    <label for="username">Username</label>
+                    <input id="username" name="username" type="text" autocomplete="username" required>
                 </div>
+                <div class="credential-field">
+                    <label for="password">Password</label>
+                    <input id="password" name="password" type="password" autocomplete="current-password" required>
+                </div>
+                {% if error %}<p class="form-error" role="alert">{{ error }}</p>{% endif %}
+                <button type="submit" class="primary-btn credential-submit">Sign in</button>
             </form>
-            <a href="{% url 'credential_login' %}" class="secondary-btn credential-preview-link">Preview credential login</a>
         </div>
     </div>
 </body>

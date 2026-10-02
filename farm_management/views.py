@@ -19,6 +19,8 @@ ROLE_DISPLAY_NAMES = {
     'staff': 'Regular Staff',
 }
 
+DEMO_CREDENTIALS = {role: role for role in ROLE_ACCESS}
+
 
 def get_role_display_name(role):
     return ROLE_DISPLAY_NAMES.get(role, role.replace('_', ' ').title())
@@ -44,17 +46,20 @@ def redirect_to_login(request):
 
 
 def login_view(request):
+    error = None
     if request.method == 'POST':
-        role = request.POST.get('role', 'owner').lower()
-        if role not in ROLE_ACCESS:
-            role = 'owner'
-        request.session['role'] = role
-        return redirect('dashboard')
-    return render(request, 'farm_management/login.html')
+        username = request.POST.get('username', '').strip().lower()
+        password = request.POST.get('password', '')
+        role = DEMO_CREDENTIALS.get(username)
+        if role and password == DEMO_CREDENTIALS[role]:
+            request.session['role'] = role
+            return redirect('dashboard')
+        error = 'Invalid username or password.'
+    return render(request, 'farm_management/login.html', {'error': error})
 
 
 def credential_login_view(request):
-    return render(request, 'farm_management/credential_login.html')
+    return redirect('login')
 
 
 def logout_view(request):
