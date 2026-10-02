@@ -1,0 +1,73 @@
+{% extends 'farm_management/base.html' %}
+
+{% block title %}Record Sale | Dagooc Farm{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div>
+        <p class="eyebrow">Sales</p>
+        <h1>Record New Sale</h1>
+    </div>
+</section>
+
+<div class="content-grid two-col">
+    <div class="panel">
+        <h3>New Transaction</h3>
+        <form class="form-grid">
+            <p>
+                <label>Customer</label>
+                <input type="text" value="Walk-in Customer">
+            </p>
+            <p>
+                <label>Item</label>
+                <select>
+                    <option>Lettuce</option>
+                    <option>Carabao Mango</option>
+                    <option>Dragon Fruit</option>
+                    <option>Eggplant</option>
+                </select>
+            </p>
+            <p>
+                <label>Quantity</label>
+                <input type="text" value="2">
+            </p>
+            <p>
+                <label>Payment Method</label>
+                <select>
+                    <option>Cash</option>
+                    <option>GCash</option>
+                    <option>Bank Transfer</option>
+                    <option>Card</option>
+                </select>
+            </p>
+            <p>
+                <label>Notes</label>
+                <textarea rows="3">Customer pickup / delivery notes</textarea>
+            </p>
+            <button type="button" class="primary-btn">Save Transaction</button>
+        </form>
+    </div>
+
+    <div class="panel">
+        <h3>Current Cart</h3>
+        <ul class="stack-list">
+            {% for item in cart_preview %}
+            <li>
+                <span>{{ item.item }} x{{ item.qty }}</span>
+                <strong>{{ item.amount }}</strong>
+            </li>
+            {% empty %}
+            <li><span>No items in cart.</span><strong>—</strong></li>
+            {% endfor %}
+        </ul>
+        <div class="panel mt-20" style="margin-top: 18px;">
+            <h3>Order Summary</h3>
+            <ul class="stack-list">
+                <li><span>Subtotal</span><strong>₱ 515</strong></li>
+                <li><span>Tax</span><strong>₱ 41</strong></li>
+                <li><span>Total</span><strong>₱ 556</strong></li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

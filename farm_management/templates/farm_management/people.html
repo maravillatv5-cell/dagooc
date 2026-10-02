@@ -1,0 +1,91 @@
+{% extends 'farm_management/base.html' %}
+
+{% block title %}People & Approvals | Dagooc Farm{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div>
+        <p class="eyebrow">Owner Approval</p>
+        <h1>People & Team Approvals</h1>
+    </div>
+</section>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <span>Active Employees</span>
+        <strong>48</strong>
+        <small>Approved roster</small>
+    </div>
+    <div class="stat-card">
+        <span>Applicants</span>
+        <strong>3</strong>
+        <small>Awaiting review</small>
+    </div>
+    <div class="stat-card">
+        <span>On Leave</span>
+        <strong>1</strong>
+        <small>Currently unavailable</small>
+    </div>
+    <div class="stat-card accent">
+        <span>Approval Queue</span>
+        <strong>4</strong>
+        <small>Needs decisions</small>
+    </div>
+</div>
+
+<div class="content-grid two-col">
+    <div class="panel">
+        <h3>Employee Directory</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for employee in employees %}
+                <tr>
+                    <td>{{ employee.name }}</td>
+                    <td>{{ employee.employee_type }}</td>
+                    <td>{{ employee.role }}</td>
+                    <td>{{ employee.status }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4">No employees yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="panel">
+        <h3>Applicant Review Queue</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Position</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for applicant in applicants %}
+                <tr>
+                    <td>{{ applicant.name }}</td>
+                    <td>{{ applicant.role }}</td>
+                    <td>{{ applicant.type }}</td>
+                    <td>{{ applicant.status }}</td>
+                    <td><button class="tiny-btn" type="button">Approve</button></td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5">No applicants awaiting review.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,92 @@
+{% extends 'farm_management/base.html' %}
+
+{% block title %}Operations | Dagooc Farm{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div>
+        <p class="eyebrow">Owner Operations</p>
+        <h1>Current Contracts & Active Business Operations</h1>
+    </div>
+</section>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <span>Active Contracts</span>
+        <strong>3</strong>
+        <small>Currently in effect</small>
+    </div>
+    <div class="stat-card">
+        <span>Operations Status</span>
+        <strong>Stable</strong>
+        <small>Across production and sales</small>
+    </div>
+    <div class="stat-card">
+        <span>Priority Watch</span>
+        <strong>2</strong>
+        <small>Needs attention</small>
+    </div>
+    <div class="stat-card accent">
+        <span>Owner Review</span>
+        <strong>5</strong>
+        <small>Items to monitor</small>
+    </div>
+</div>
+
+<div class="content-grid two-col">
+    <div class="panel">
+        <h3>Current Contracts</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Contract</th>
+                    <th>Partner</th>
+                    <th>Value</th>
+                    <th>Status</th>
+                    <th>End</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for contract in active_contracts %}
+                <tr>
+                    <td>{{ contract.name }}</td>
+                    <td>{{ contract.partner }}</td>
+                    <td>{{ contract.value }}</td>
+                    <td>{{ contract.status }}</td>
+                    <td>{{ contract.end_date }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5">No active contracts.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="panel">
+        <h3>Current Operations</h3>
+        <ul class="stack-list">
+            {% for item in current_operations %}
+            <li>
+                <span>
+                    <strong>{{ item.title }}</strong><br>
+                    {{ item.team }}
+                </span>
+                <strong>{{ item.status }}</strong>
+            </li>
+            {% empty %}
+            <li><span>No operations listed.</span><strong>—</strong></li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<div class="panel mt-20">
+    <h3>Operations Notes</h3>
+    <ul class="stack-list">
+        <li><span>Production output remains above the expected seasonal baseline.</span><strong>Review</strong></li>
+        <li><span>Supplier deliveries are on schedule for the next 2 weeks.</span><strong>Stable</strong></li>
+        <li><span>Retail and hotel orders need close monitoring for fulfillment timing.</span><strong>Watch</strong></li>
+        <li><span>Workforce coverage is stable with minor scheduling adjustments needed.</span><strong>Monitor</strong></li>
+    </ul>
+</div>
+{% endblock %}

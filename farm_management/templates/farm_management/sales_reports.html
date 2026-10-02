@@ -1,0 +1,71 @@
+{% extends 'farm_management/base.html' %}
+
+{% block title %}Sales Reports | Dagooc Farm{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div>
+        <p class="eyebrow">Sales</p>
+        <h1>Sales Reports & Submissions</h1>
+    </div>
+</section>
+
+<div class="stats-grid">
+    {% for item in summary_cards %}
+    <div class="stat-card {% if forloop.last %}accent{% endif %}">
+        <span>{{ item.label }}</span>
+        <strong>{{ item.value }}</strong>
+        <small>{{ item.note }}</small>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="panel mt-20">
+    <h3>Recent Sales</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Receipt</th>
+                <th>Method</th>
+                <th>Amount</th>
+                <th>Buyer</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in transactions %}
+            <tr>
+                <td>{{ transaction.receipt }}</td>
+                <td>{{ transaction.method }}</td>
+                <td>{{ transaction.amount }}</td>
+                <td>{{ transaction.buyer }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4">No recent sales.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="panel mt-20">
+    <h3>Submit Daily Summary</h3>
+    <form class="form-grid">
+        <p>
+            <label>Report Date</label>
+            <input type="text" value="Oct 02, 2026">
+        </p>
+        <p>
+            <label>Total Sales</label>
+            <input type="text" value="₱ 15,600">
+        </p>
+        <p>
+            <label>Customer Count</label>
+            <input type="text" value="18">
+        </p>
+        <p>
+            <label>Summary</label>
+            <textarea rows="4">Strong sales volume from walk-in buyers and retail orders. Need to monitor inventory for lettuce and mango supply.</textarea>
+        </p>
+        <button type="button" class="primary-btn">Submit to Management</button>
+    </form>
+</div>
+{% endblock %}

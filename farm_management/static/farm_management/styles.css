@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap');
+
 :root {
     --bg: #f5f7f1;
     --panel: #ffffff;
@@ -11,15 +13,40 @@
     --border: #e2e8e2;
     --warning: #fff2d5;
     --danger: #d65b4d;
+    --body-font: 'Inter', 'Segoe UI', sans-serif;
+    --heading-font: 'Manrope', 'Inter', sans-serif;
 }
 
 * { box-sizing: border-box; }
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family: var(--body-font);
     background: var(--bg);
     color: var(--text);
     position: relative;
+    line-height: 1.6;
+    letter-spacing: -0.01em;
+}
+
+h1, h2, h3, h4, h5, h6,
+.brand-box h2,
+.page-header h1,
+.panel h3,
+.stat-card strong {
+    font-family: var(--heading-font);
+    letter-spacing: -0.02em;
+    line-height: 1.08;
+    font-weight: 700;
+}
+
+.nav-link,
+.nav-sub-link,
+.view-mode-switch button,
+button,
+input,
+select,
+textarea {
+    font-family: var(--body-font);
 }
 
 .page-watermark {

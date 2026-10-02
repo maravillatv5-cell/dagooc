@@ -1,0 +1,69 @@
+{% extends 'farm_management/base.html' %}
+
+{% block title %}Finance Operations | Dagooc Farm{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div>
+        <p class="eyebrow">Finance Department</p>
+        <h1>Cashflow & Submission Center</h1>
+    </div>
+</section>
+
+<div class="stats-grid">
+    {% for item in submissions %}
+    <div class="stat-card">
+        <span>{{ item.label }}</span>
+        <strong>{{ item.value }}</strong>
+        <small>{{ item.status }}</small>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="content-grid two-col">
+    <div class="panel">
+        <h3>Submit Summary to Owner</h3>
+        <form class="form-grid">
+            <p>
+                <label>Report Period</label>
+                <input type="text" value="October 2026">
+            </p>
+            <p>
+                <label>Net Cashflow</label>
+                <input type="text" value="₱ 392,400">
+            </p>
+            <p>
+                <label>Operating Expenses</label>
+                <input type="text" value="₱ 856,100">
+            </p>
+            <p>
+                <label>Payroll Due</label>
+                <input type="text" value="₱ 268,900">
+            </p>
+            <p>
+                <label>Notes for Owner</label>
+                <textarea rows="4">Cash flow remains healthy this cycle. Pending supplier payments are within budget and payroll is scheduled for approval.</textarea>
+            </p>
+            <button type="button" class="primary-btn">Submit to Owner</button>
+        </form>
+    </div>
+
+    <div class="panel">
+        <h3>Pending Requests</h3>
+        <ul class="stack-list">
+            {% for item in pending_requests %}
+            <li>
+                <span>{{ item.name }}</span>
+                <strong>{{ item.amount }}</strong>
+            </li>
+            {% empty %}
+            <li><span>No pending requests.</span><strong>—</strong></li>
+            {% endfor %}
+        </ul>
+        <div class="panel mt-20" style="margin-top: 16px;">
+            <h3>Owner Approval Notes</h3>
+            <p class="role-tag">Awaiting final sign-off on restocking and maintenance approvals.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

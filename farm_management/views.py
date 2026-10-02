@@ -2,10 +2,10 @@ from django.shortcuts import redirect, render
 
 
 ROLE_ACCESS = {
-    'owner': {'dashboard', 'inventory', 'pos', 'hr', 'reports', 'applications', 'tasks'},
-    'finance': {'dashboard', 'reports'},
-    'inventory': {'inventory'},
-    'sales': {'pos'},
+    'owner': {'dashboard', 'reports', 'people', 'operations'},
+    'finance': {'dashboard', 'reports', 'finance'},
+    'inventory': {'dashboard', 'inventory_entry', 'inventory_info', 'inventory'},
+    'sales': {'dashboard', 'sales_entry', 'sales_reports'},
     'hr': {'hr'},
     'staff': {'tasks'},
 }
@@ -70,9 +70,9 @@ def dashboard(request):
 
     if role not in {'owner', 'finance'}:
         if role == 'inventory':
-            return redirect('inventory')
+            return redirect('inventory_entry')
         if role == 'sales':
-            return redirect('pos')
+            return redirect('sales_entry')
         if role == 'hr':
             return redirect('hr')
         if role == 'staff':
@@ -115,8 +115,19 @@ def dashboard(request):
     return render(request, 'farm_management/dashboard.html', context)
 
 
-@role_required('inventory')
-def inventory_view(request):
+@role_required('inventory_entry')
+def inventory_entry_view(request):
+    items = [
+        {'name': 'Lettuce', 'category': 'Vegetables', 'stock': '120 kg', 'status': 'Healthy'},
+        {'name': 'Carabao Mango', 'category': 'Fruits', 'stock': '45 kg', 'status': 'Low stock'},
+        {'name': 'Dragon Fruit', 'category': 'Fruits', 'stock': '18 kg', 'status': 'Restocking'},
+        {'name': 'Eggplant', 'category': 'Vegetables', 'stock': '86 kg', 'status': 'Healthy'},
+    ]
+    return render(request, 'farm_management/inventory_entry.html', {'items': items})
+
+
+@role_required('inventory_info')
+def inventory_info_view(request):
     items = [
         {'name': 'Lettuce', 'category': 'Vegetables', 'stock': '120 kg', 'status': 'Healthy'},
         {'name': 'Carabao Mango', 'category': 'Fruits', 'stock': '45 kg', 'status': 'Low stock'},
@@ -127,7 +138,12 @@ def inventory_view(request):
         {'item': 'Dragon Fruit', 'type': 'Deduction', 'quantity': '7 kg', 'reason': 'Sales order'},
         {'item': 'Lettuce', 'type': 'Addition', 'quantity': '30 kg', 'reason': 'Supplier delivery'},
     ]
-    return render(request, 'farm_management/inventory.html', {'items': items, 'transaction_log': transaction_log})
+    return render(request, 'farm_management/inventory_info.html', {'items': items, 'transaction_log': transaction_log})
+
+
+@role_required('inventory')
+def inventory_view(request):
+    return inventory_info_view(request)
 
 
 @role_required('pos')
@@ -218,6 +234,72 @@ def hr_employees_view(request):
     context = _build_hr_context()
     context['section'] = 'employees'
     return render(request, 'farm_management/hr.html', context)
+
+
+@role_required('people')
+def people_view(request):
+    context = _build_hr_context()
+    return render(request, 'farm_management/people.html', context)
+
+
+@role_required('operations')
+def operations_view(request):
+    active_contracts = [
+        {'name': 'PhilGEPS Supply Contract', 'partner': 'GreenHarvest Co.', 'value': '₱ 240,000', 'status': 'Active', 'end_date': 'Dec 31, 2026'},
+        {'name': 'Department of Agriculture Purchase', 'partner': 'DA-Regional Office', 'value': '₱ 180,500', 'status': 'Active', 'end_date': 'Nov 15, 2026'},
+        {'name': 'Hotel Supply Agreement', 'partner': 'Sunrise Hotel', 'value': '₱ 96,000', 'status': 'Renewal pending', 'end_date': 'Nov 30, 2026'},
+    ]
+    current_operations = [
+        {'title': 'Crop Production', 'team': 'Field Crew', 'status': 'On track', 'detail': 'Lettuce and eggplant harvest cycle ahead of target.'},
+        {'title': 'Inventory Replenishment', 'team': 'Warehouse Team', 'status': 'Monitoring', 'detail': 'Monitor delivery windows for mango and dragon fruit stock.'},
+        {'title': 'Sales Pipeline', 'team': 'Sales Desk', 'status': 'Active', 'detail': 'Hotel and retail orders are being fulfilled this week.'},
+        {'title': 'Workforce Deployment', 'team': 'HR & Operations', 'status': 'Stable', 'detail': 'Staffing levels remain within required coverage for field work.'},
+    ]
+    return render(request, 'farm_management/operations.html', {
+        'active_contracts': active_contracts,
+        'current_operations': current_operations,
+    })
+
+
+@role_required('finance')
+def finance_view(request):
+    submissions = [
+        {'label': 'Operating Expenses', 'value': '₱ 856,100', 'status': 'Ready for review'},
+        {'label': 'Payroll Due', 'value': '₱ 268,900', 'status': 'Submitted'},
+        {'label': 'Cashflow', 'value': '₱ 392,400', 'status': 'Updated today'},
+        {'label': 'Pending Approvals', 'value': '4 items', 'status': 'Needs owner sign-off'},
+    ]
+    pending_requests = [
+        {'name': 'Feed & agronomy supplies', 'amount': '₱ 42,800', 'reason': 'Monthly restock'},
+        {'name': 'Equipment maintenance', 'amount': '₱ 18,500', 'reason': 'Repair and servicing'},
+        {'name': 'Harvest logistics', 'amount': '₱ 26,400', 'reason': 'Transport and cold storage'},
+    ]
+    return render(request, 'farm_management/finance.html', {'submissions': submissions, 'pending_requests': pending_requests})
+
+
+@role_required('sales_entry')
+def sales_entry_view(request):
+    cart_preview = [
+        {'item': 'Lettuce', 'qty': 2, 'amount': '₱ 150'},
+        {'item': 'Carabao Mango', 'qty': 3, 'amount': '₱ 330'},
+        {'item': 'Dragon Fruit', 'qty': 1, 'amount': '₱ 35'},
+    ]
+    return render(request, 'farm_management/sales_entry.html', {'cart_preview': cart_preview})
+
+
+@role_required('sales_reports')
+def sales_reports_view(request):
+    transactions = [
+        {'receipt': 'DF-101', 'method': 'Cash', 'amount': '₱ 1,250', 'buyer': 'Household Customer'},
+        {'receipt': 'DF-102', 'method': 'GCash', 'amount': '₱ 2,340', 'buyer': 'Restaurant Buyer'},
+        {'receipt': 'DF-103', 'method': 'Card', 'amount': '₱ 980', 'buyer': 'Walk-in Customer'},
+    ]
+    summary_cards = [
+        {'label': 'Today Sales', 'value': '₱ 15,600', 'note': 'Across 18 transactions'},
+        {'label': 'Best Seller', 'value': 'Lettuce', 'note': '42 units sold'},
+        {'label': 'Pending Summary', 'value': '2', 'note': 'Reports to submit'},
+    ]
+    return render(request, 'farm_management/sales_reports.html', {'transactions': transactions, 'summary_cards': summary_cards})
 
 
 @role_required('reports')

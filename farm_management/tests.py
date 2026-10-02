@@ -8,14 +8,22 @@ class RoleBasedAccessTests(TestCase):
         session['role'] = role
         session.save()
 
-    def test_sales_staff_cannot_access_hr_page(self):
+    def test_sales_staff_has_separate_sales_and_reporting_pages(self):
         self.set_role('sales')
+        for name in ['sales_entry', 'sales_reports']:
+            response = self.client.get(reverse(name))
+            self.assertEqual(response.status_code, 200, f'sales failed on {name}')
+
         response = self.client.get(reverse('hr'))
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('dashboard'))
 
-    def test_inventory_staff_cannot_access_sales_page(self):
+    def test_inventory_staff_has_separate_record_and_information_pages(self):
         self.set_role('inventory')
+        for name in ['inventory_entry', 'inventory_info']:
+            response = self.client.get(reverse(name))
+            self.assertEqual(response.status_code, 200, f'inventory failed on {name}')
+
         response = self.client.get(reverse('pos'))
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('dashboard'))
@@ -30,31 +38,37 @@ class RoleBasedAccessTests(TestCase):
 
     def test_finance_can_access_only_finance_pages(self):
         self.set_role('finance')
-        for name in ['dashboard', 'reports']:
+        for name in ['dashboard', 'reports', 'finance']:
             response = self.client.get(reverse(name))
             self.assertEqual(response.status_code, 200, f'finance failed on {name}')
 
         response = self.client.get(reverse('dashboard'))
         self.assertContains(response, reverse('reports'))
-        for name in ['inventory', 'pos', 'hr', 'hr_attendance', 'hr_payroll', 'hr_applicants', 'hr_employees', 'applications', 'tasks']:
+        self.assertContains(response, reverse('finance'))
+        for name in ['inventory', 'pos', 'hr', 'hr_attendance', 'hr_payroll', 'hr_applicants', 'hr_employees', 'applications', 'tasks', 'people']:
             self.assertNotContains(response, reverse(name))
 
-        for name in ['inventory', 'pos', 'hr', 'hr_attendance', 'hr_payroll', 'hr_applicants', 'hr_employees', 'applications', 'tasks']:
+        for name in ['inventory', 'pos', 'hr', 'hr_attendance', 'hr_payroll', 'hr_applicants', 'hr_employees', 'applications', 'tasks', 'people']:
             response = self.client.get(reverse(name))
             self.assertEqual(response.status_code, 302, f'finance unexpectedly accessed {name}')
             self.assertEqual(response.url, reverse('dashboard'))
 
-    def test_owner_can_access_management_modules(self):
+    def test_owner_can_access_dashboard_reports_people_and_operations(self):
         self.set_role('owner')
-        for name in ['dashboard', 'inventory', 'pos', 'hr', 'reports', 'applications', 'tasks']:
+        for name in ['dashboard', 'reports', 'people', 'operations']:
             response = self.client.get(reverse(name))
             self.assertEqual(response.status_code, 200, f'owner failed on {name}')
 
-    def test_dashboard_is_only_for_owner_and_finance(self):
+        for name in ['inventory', 'pos', 'hr', 'hr_attendance', 'hr_payroll', 'hr_applicants', 'hr_employees', 'applications', 'tasks']:
+            response = self.client.get(reverse(name))
+            self.assertEqual(response.status_code, 302, f'owner unexpectedly accessed {name}')
+            self.assertEqual(response.url, reverse('dashboard'))
+
+    def test_sales_dashboard_redirects_to_sales_entry(self):
         self.set_role('sales')
         response = self.client.get(reverse('dashboard'))
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse('pos'))
+        self.assertRedirects(response, reverse('sales_entry'))
 
         self.set_role('finance')
         self.assertEqual(self.client.get(reverse('dashboard')).status_code, 200)

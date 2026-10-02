@@ -23,26 +23,28 @@
             </div>
 
             <nav class="nav top-nav">
-                {% if request.session.role == 'owner' or request.session.role == 'finance' %}
+                {% if request.session.role == 'owner' %}
                     <a href="{% url 'dashboard' %}" class="nav-link">Dashboard</a>
+                    <a href="{% url 'operations' %}" class="nav-link">Operations</a>
+                    <a href="{% url 'reports' %}" class="nav-link">Reports Summary</a>
+                    <a href="{% url 'people' %}" class="nav-link">People</a>
+                {% elif request.session.role == 'finance' %}
+                    <a href="{% url 'dashboard' %}" class="nav-link">Dashboard</a>
+                    <a href="{% url 'finance' %}" class="nav-link">Finance</a>
+                    <a href="{% url 'reports' %}" class="nav-link">Reports</a>
+                {% elif request.session.role == 'sales' %}
+                    <a href="{% url 'sales_entry' %}" class="nav-link">Record Sale</a>
+                    <a href="{% url 'sales_reports' %}" class="nav-link">Sales Reports</a>
                 {% endif %}
-                {% if request.session.role == 'owner' or request.session.role == 'inventory' %}
-                    <a href="{% url 'inventory' %}" class="nav-link">Inventory</a>
+                {% if request.session.role == 'inventory' %}
+                    <a href="{% url 'inventory_entry' %}" class="nav-link">Record Inventory</a>
+                    <a href="{% url 'inventory_info' %}" class="nav-link">Inventory Info</a>
                 {% endif %}
-                {% if request.session.role == 'owner' or request.session.role == 'sales' %}
-                    <a href="{% url 'pos' %}" class="nav-link">POS</a>
-                {% endif %}
-                {% if request.session.role == 'owner' or request.session.role == 'hr' %}
+                {% if request.session.role == 'hr' %}
                     <a href="{% url 'hr_attendance' %}" class="nav-link">Attendance</a>
                     <a href="{% url 'hr_payroll' %}" class="nav-link">Payroll</a>
                     <a href="{% url 'hr_applicants' %}" class="nav-link">Applicants</a>
                     <a href="{% url 'hr_employees' %}" class="nav-link">Employees</a>
-                {% endif %}
-                {% if request.session.role == 'owner' or request.session.role == 'finance' %}
-                    <a href="{% url 'reports' %}" class="nav-link">Reports</a>
-                {% endif %}
-                {% if request.session.role == 'owner' %}
-                    <a href="{% url 'applications' %}" class="nav-link">Applications</a>
                 {% endif %}
                 {% if request.session.role == 'staff' %}
                     <a href="{% url 'tasks' %}" class="nav-link">My Tasks</a>
