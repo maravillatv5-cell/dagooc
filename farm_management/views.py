@@ -21,9 +21,30 @@ ROLE_DISPLAY_NAMES = {
 
 DEMO_CREDENTIALS = {role: role for role in ROLE_ACCESS}
 
+MOCK_PRODUCTS = [
+    {'id': 'eggs', 'name': 'Free-range Eggs', 'category': 'Poultry', 'unit': 'dozen', 'price': 180, 'stock': 42, 'reorder_level': 12, 'inventory_tracked': True},
+    {'id': 'lettuce', 'name': 'Hydroponic Lettuce', 'category': 'Hydroponics', 'unit': 'kg', 'price': 75, 'stock': 120, 'reorder_level': 25, 'inventory_tracked': True},
+    {'id': 'eggplant', 'name': 'Hydroponic Eggplant', 'category': 'Hydroponics', 'unit': 'kg', 'price': 60, 'stock': 86, 'reorder_level': 20, 'inventory_tracked': True},
+    {'id': 'honey', 'name': 'Raw Honey', 'category': 'Bees', 'unit': 'jar', 'price': 250, 'stock': 24, 'reorder_level': 6, 'inventory_tracked': True},
+    {'id': 'farm-soda', 'name': 'Farm Soda', 'category': 'Soda', 'unit': 'bottle', 'price': 45, 'stock': 50, 'reorder_level': 10, 'inventory_tracked': True},
+    {'id': 'delivery-service', 'name': 'Local Delivery Service', 'category': 'Services', 'unit': 'service', 'price': 80, 'stock': None, 'reorder_level': None, 'inventory_tracked': False},
+]
+
 
 def get_role_display_name(role):
     return ROLE_DISPLAY_NAMES.get(role, role.replace('_', ' ').title())
+
+
+def get_mock_inventory_items():
+    return [
+        {
+            **product,
+            'stock_display': f"{product['stock']} {product['unit']}",
+            'status': 'Low stock' if product['stock'] <= product['reorder_level'] else 'Healthy',
+        }
+        for product in MOCK_PRODUCTS
+        if product['inventory_tracked']
+    ]
 
 
 def role_required(page_name):
@@ -122,28 +143,20 @@ def dashboard(request):
 
 @role_required('inventory_entry')
 def inventory_entry_view(request):
-    items = [
-        {'name': 'Lettuce', 'category': 'Vegetables', 'stock': '120 kg', 'status': 'Healthy'},
-        {'name': 'Carabao Mango', 'category': 'Fruits', 'stock': '45 kg', 'status': 'Low stock'},
-        {'name': 'Dragon Fruit', 'category': 'Fruits', 'stock': '18 kg', 'status': 'Restocking'},
-        {'name': 'Eggplant', 'category': 'Vegetables', 'stock': '86 kg', 'status': 'Healthy'},
-    ]
-    return render(request, 'farm_management/inventory_entry.html', {'items': items})
+    return render(request, 'farm_management/inventory_entry.html', {
+        'items': get_mock_inventory_items(),
+        'products': MOCK_PRODUCTS,
+        'actor': request.session.get('role', 'inventory'),
+    })
 
 
 @role_required('inventory_info')
 def inventory_info_view(request):
-    items = [
-        {'name': 'Lettuce', 'category': 'Vegetables', 'stock': '120 kg', 'status': 'Healthy'},
-        {'name': 'Carabao Mango', 'category': 'Fruits', 'stock': '45 kg', 'status': 'Low stock'},
-        {'name': 'Dragon Fruit', 'category': 'Fruits', 'stock': '18 kg', 'status': 'Restocking'},
-        {'name': 'Eggplant', 'category': 'Vegetables', 'stock': '86 kg', 'status': 'Healthy'},
-    ]
-    transaction_log = [
-        {'item': 'Dragon Fruit', 'type': 'Deduction', 'quantity': '7 kg', 'reason': 'Sales order'},
-        {'item': 'Lettuce', 'type': 'Addition', 'quantity': '30 kg', 'reason': 'Supplier delivery'},
-    ]
-    return render(request, 'farm_management/inventory_info.html', {'items': items, 'transaction_log': transaction_log})
+    return render(request, 'farm_management/inventory_info.html', {
+        'items': get_mock_inventory_items(),
+        'products': MOCK_PRODUCTS,
+        'transaction_log': [],
+    })
 
 
 @role_required('inventory')
@@ -284,12 +297,10 @@ def finance_view(request):
 
 @role_required('sales_entry')
 def sales_entry_view(request):
-    cart_preview = [
-        {'item': 'Lettuce', 'qty': 2, 'amount': '₱ 150'},
-        {'item': 'Carabao Mango', 'qty': 3, 'amount': '₱ 330'},
-        {'item': 'Dragon Fruit', 'qty': 1, 'amount': '₱ 35'},
-    ]
-    return render(request, 'farm_management/sales_entry.html', {'cart_preview': cart_preview})
+    return render(request, 'farm_management/sales_entry.html', {
+        'products': MOCK_PRODUCTS,
+        'actor': request.session.get('role', 'sales'),
+    })
 
 
 @role_required('sales_reports')

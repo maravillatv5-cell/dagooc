@@ -1,4 +1,5 @@
 {% extends 'farm_management/base.html' %}
+{% load static %}
 
 {% block title %}Inventory Info | Dagooc Farm{% endblock %}
 
@@ -12,19 +13,19 @@
 
 <div class="stats-grid">
     <div class="stat-card">
-        <span>Vegetables</span>
-        <strong>520 kg</strong>
-        <small>Available</small>
+        <span>Stock-tracked products</span>
+        <strong>5</strong>
+        <small>Across four inventory categories</small>
     </div>
     <div class="stat-card">
-        <span>Fruits</span>
-        <strong>185 kg</strong>
-        <small>Harvested</small>
+        <span>Product categories</span>
+        <strong>5</strong>
+        <small>Including Services</small>
     </div>
     <div class="stat-card">
-        <span>Dragon Fruit</span>
-        <strong>18 kg</strong>
-        <small>Restocking soon</small>
+        <span>Movement types</span>
+        <strong>4</strong>
+        <small>Inbound, Harvest, Sale, Spoilage</small>
     </div>
     <div class="stat-card accent">
         <span>Ready for Sale</span>
@@ -47,11 +48,11 @@
             </thead>
             <tbody>
                 {% for item in items %}
-                <tr {% if item.status == 'Low stock' %}class="warning-row"{% endif %}>
+                <tr data-stock-row data-product-id="{{ item.id }}" data-base-stock="{{ item.stock }}" data-unit="{{ item.unit }}" data-reorder-level="{{ item.reorder_level }}" {% if item.status == 'Low stock' %}class="warning-row"{% endif %}>
                     <td>{{ item.name }}</td>
                     <td>{{ item.category }}</td>
-                    <td>{{ item.stock }}</td>
-                    <td>{{ item.status }}</td>
+                    <td data-stock-value>{{ item.stock_display }}</td>
+                    <td data-stock-status>{{ item.status }}</td>
                 </tr>
                 {% empty %}
                 <tr><td colspan="4">No inventory records yet.</td></tr>
@@ -62,11 +63,10 @@
 
     <div class="panel">
         <h3>Current Stock Status</h3>
-        <ul class="stack-list">
-            <li><span>Lettuce</span><strong>Healthy</strong></li>
-            <li><span>Carabao Mango</span><strong>Low stock</strong></li>
-            <li><span>Dragon Fruit</span><strong>Restocking</strong></li>
-            <li><span>Eggplant</span><strong>Healthy</strong></li>
+        <ul id="inventory-status-list" class="stack-list">
+            {% for item in items %}
+            <li data-stock-status-row="{{ item.id }}"><span>{{ item.name }}</span><strong>{{ item.status }}</strong></li>
+            {% endfor %}
         </ul>
     </div>
 </div>
@@ -79,21 +79,16 @@
                 <th>Item</th>
                 <th>Type</th>
                 <th>Quantity</th>
+                <th>Supplier</th>
+                <th>Logged By</th>
                 <th>Reason</th>
             </tr>
         </thead>
-        <tbody>
-            {% for entry in transaction_log %}
-            <tr>
-                <td>{{ entry.item }}</td>
-                <td>{{ entry.type }}</td>
-                <td>{{ entry.quantity }}</td>
-                <td>{{ entry.reason }}</td>
-            </tr>
-            {% empty %}
-            <tr><td colspan="4">No stock movement records.</td></tr>
-            {% endfor %}
+        <tbody id="inventory-log-rows">
+            <tr data-empty-log><td colspan="6">No stock movement records in this browser.</td></tr>
         </tbody>
     </table>
 </div>
+{{ products|json_script:"mock-product-catalog" }}
+<script defer src="{% static 'farm_management/mock-workflows.js' %}"></script>
 {% endblock %}

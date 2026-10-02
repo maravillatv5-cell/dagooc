@@ -327,6 +327,10 @@ th {
     margin-bottom: 16px;
 }
 
+[hidden] {
+    display: none !important;
+}
+
 .form-grid label {
     font-weight: 600;
     color: var(--text);
@@ -380,6 +384,12 @@ th {
 .secondary-btn:hover,
 .tiny-btn:hover {
     transform: translateY(-1px);
+}
+
+.primary-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+    transform: none;
 }
 
 .mt-20 { margin-top: 20px; }

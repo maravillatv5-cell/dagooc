@@ -1,4 +1,5 @@
 {% extends 'farm_management/base.html' %}
+{% load static %}
 
 {% block title %}Record Sale | Dagooc Farm{% endblock %}
 
@@ -10,64 +11,62 @@
     </div>
 </section>
 
-<div class="content-grid two-col">
+<form id="sales-transaction-form" class="content-grid two-col" data-actor="{{ actor }}">
     <div class="panel">
         <h3>New Transaction</h3>
-        <form class="form-grid">
+        <div class="form-grid">
             <p>
-                <label>Customer</label>
-                <input type="text" value="Walk-in Customer">
+                <label for="sale-customer">Customer</label>
+                <input id="sale-customer" type="text" value="Walk-in Customer" required>
             </p>
             <p>
-                <label>Item</label>
-                <select>
-                    <option>Lettuce</option>
-                    <option>Carabao Mango</option>
-                    <option>Dragon Fruit</option>
-                    <option>Eggplant</option>
+                <label for="sale-category">Product Category</label>
+                <select id="sale-category" required>
+                    <option value="">Select category</option>
                 </select>
             </p>
             <p>
-                <label>Quantity</label>
-                <input type="text" value="2">
-            </p>
-            <p>
-                <label>Payment Method</label>
-                <select>
-                    <option>Cash</option>
-                    <option>GCash</option>
-                    <option>Bank Transfer</option>
-                    <option>Card</option>
+                <label for="sale-product">Product</label>
+                <select id="sale-product" required disabled>
+                    <option value="">Choose a category first</option>
                 </select>
             </p>
             <p>
-                <label>Notes</label>
-                <textarea rows="3">Customer pickup / delivery notes</textarea>
+                <label for="sale-quantity">Quantity</label>
+                <input id="sale-quantity" type="number" min="1" step="1" value="1" required>
             </p>
-            <button type="button" class="primary-btn">Save Transaction</button>
-        </form>
+            <p>
+                <label for="sale-payment">Payment Method</label>
+                <select id="sale-payment" required>
+                    <option value="Cash">Cash</option>
+                    <option value="GCash">GCash</option>
+                    <option value="Bank Transfer">Bank Transfer</option>
+                    <option value="Card">Card</option>
+                </select>
+            </p>
+            <p>
+                <label for="sale-notes">Notes</label>
+                <textarea id="sale-notes" rows="3" placeholder="Customer pickup / delivery notes"></textarea>
+            </p>
+            <p class="form-note">Processed by demo account: <strong>{{ actor }}</strong></p>
+            <button id="add-sale-item" type="button" class="secondary-btn">Add item</button>
+            <p id="sales-message" class="form-note" role="status" aria-live="polite"></p>
+        </div>
     </div>
 
     <div class="panel">
-        <h3>Current Cart</h3>
-        <ul class="stack-list">
-            {% for item in cart_preview %}
-            <li>
-                <span>{{ item.item }} x{{ item.qty }}</span>
-                <strong>{{ item.amount }}</strong>
-            </li>
-            {% empty %}
-            <li><span>No items in cart.</span><strong>—</strong></li>
-            {% endfor %}
+        <h3>Transaction Items</h3>
+        <ul id="sale-cart" class="stack-list">
+            <li data-empty-cart><span>No items added.</span><strong>Required: add at least one</strong></li>
         </ul>
-        <div class="panel mt-20" style="margin-top: 18px;">
-            <h3>Order Summary</h3>
-            <ul class="stack-list">
-                <li><span>Subtotal</span><strong>₱ 515</strong></li>
-                <li><span>Tax</span><strong>₱ 41</strong></li>
-                <li><span>Total</span><strong>₱ 556</strong></li>
-            </ul>
-        </div>
+        <ul class="stack-list">
+            <li><span>Subtotal</span><strong id="sale-subtotal">₱0.00</strong></li>
+            <li><span>Tax (8%)</span><strong id="sale-tax">₱0.00</strong></li>
+            <li><span>Total</span><strong id="sale-total">₱0.00</strong></li>
+        </ul>
+        <button id="complete-sale" type="submit" class="primary-btn" disabled>Complete Sale</button>
     </div>
-</div>
+</form>
+{{ products|json_script:"mock-product-catalog" }}
+<script defer src="{% static 'farm_management/mock-workflows.js' %}"></script>
 {% endblock %}

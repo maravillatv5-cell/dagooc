@@ -28,6 +28,25 @@ class RoleBasedAccessTests(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('dashboard'))
 
+    def test_inventory_mock_exposes_required_categories_and_movements(self):
+        self.set_role('inventory')
+        response = self.client.get(reverse('inventory_entry'))
+        for category in ['Poultry', 'Hydroponics', 'Bees', 'Soda', 'Services']:
+            self.assertContains(response, category)
+        for movement in ['Inbound', 'Harvest', 'Sale', 'Spoilage']:
+            self.assertContains(response, movement)
+        self.assertContains(response, 'Recorded by demo account:')
+        self.assertContains(response, 'id="supplier-field" hidden')
+
+    def test_sales_mock_starts_without_items_and_requires_one_to_complete(self):
+        self.set_role('sales')
+        response = self.client.get(reverse('sales_entry'))
+        for category in ['Poultry', 'Hydroponics', 'Bees', 'Soda', 'Services']:
+            self.assertContains(response, category)
+        self.assertContains(response, 'Required: add at least one')
+        self.assertContains(response, 'id="complete-sale" type="submit" class="primary-btn" disabled')
+        self.assertContains(response, 'Processed by demo account:')
+
     def test_staff_can_access_daily_tasks_only(self):
         self.set_role('staff')
         response = self.client.get(reverse('tasks'))
